@@ -52,7 +52,7 @@ describe('manager', function() {
     });
 
     it('should modify the model', function() {
-      return manager.fetch('car', { id: 1 }).then(function(car) {
+      return manager.fetch('car', { customCarId: 1 }).then(function(car) {
         assert.equal(car.get('quantity'), 1, 'Car #1 should start with quantity of 1');
 
         return manager.save(car, {
@@ -64,9 +64,10 @@ describe('manager', function() {
     });
 
     it('should modify nested models', function() {
-      return manager.fetch('car', { id: 1 }, ['color', 'title']).then(function(car) {
+      return manager.fetch('car', { customCarId: 1 }, ['color', 'title']).then(function(car) {
         assert.equal(car.related('color').id, 1);
         assert.equal(car.related('color').get('name'), 'Grey');
+        console.error(`### car.toJSON():`, car.toJSON())
         assert.equal(car.related('title').id, 1);
         assert.equal(car.related('title').get('state'), 'TX');
 
@@ -95,7 +96,7 @@ describe('manager', function() {
     });
 
     it('should modify a deep nested model', function() {
-      return manager.fetch('car', { id: 1 }, 'model.type').then(function(car) {
+      return manager.fetch('car', { customCarId: 1 }, 'model.type').then(function(car) {
         assert.equal(car.related('model').related('type').get('name'), 'Crossover');
 
         return manager.save(car, {
@@ -117,7 +118,7 @@ describe('manager', function() {
     });
 
     it('should ignore _pivot_ keys', function() {
-      return manager.fetch('car', { id: 1 }, 'features').then(function(car) {
+      return manager.fetch('car', { customCarId: 1 }, 'features').then(function(car) {
         var feature = car.related('features').at(0);
         var json    = feature.toJSON();
 
@@ -130,11 +131,11 @@ describe('manager', function() {
     });
 
     it('should orphan models in collection', function() {
-      return manager.fetch('car', { id: 1 }, 'features').then(function(car) {
+      return manager.fetch('car', { customCarId: 1 }, 'features').then(function(car) {
         assert.equal(car.related('features').length, 2, 'Car should have 2 existing features');
 
         return manager.save(car, {
-          id: 1,
+          customCarId: 1,
           features: []
         }).then(function(car) {
           assert.equal(car.related('features').length, 0, 'Car should have all features removed, found: ' + car.related('features').toJSON());
@@ -174,9 +175,9 @@ describe('manager', function() {
 
     it('should support transactions', function() {
       return manager.bookshelf.transaction(function(t) {
-        return manager.fetch('car', { id: 1 }, 'features', { transacting: t }).then(function(car) {
+        return manager.fetch('car', { customCarId: 1 }, 'features', { transacting: t }).then(function(car) {
           return manager.save(car, {
-            id: 1,
+            customCarId: 1,
             quantity: 2,
             features: []
           }, {
@@ -189,7 +190,7 @@ describe('manager', function() {
         });
       }).catch(function(err) {
         if (!(err instanceof assert.AssertionError)) {
-          return manager.fetch('car', { id: 1 }, 'features').then(function(car) {
+          return manager.fetch('car', { customCarId: 1 }, 'features').then(function(car) {
             assert.equal(car.get('quantity'), 1, 'Car should have quantity 1, got: ' + car.get('quantity'));
             assert.equal(car.related('features').length, 2, 'Car should have 2 existing features');
           });
@@ -211,7 +212,7 @@ describe('manager', function() {
     });
 
     it('should save a new hasOne model and orphan any existing one if its id is unspecified', function() {
-      return manager.fetch('car', { id: 1 }, 'title').then(function(car) {
+      return manager.fetch('car', { customCarId: 1 }, 'title').then(function(car) {
         assert.equal(car.related('title').get('state'), 'TX');
         return manager.save(car, {
           title: {
@@ -221,7 +222,7 @@ describe('manager', function() {
         });
       })
       .then(function() {
-        return manager.fetch('car', { id: 1 }, 'title').then(function(car) {
+        return manager.fetch('car', { customCarId: 1 }, 'title').then(function(car) {
           assert.equal(car.related('title').get('id'), 2);
           assert.equal(car.related('title').get('state'), 'FL');
           assert.equal(car.related('title').get('issue_date'), '2017-01-01');

@@ -49,7 +49,7 @@ module.exports = function(manager) {
       return car.save();
     })
     .then(function() {
-      return title.set('car_id', car.get('id'))
+      return title.set('car_id', car.get('customCarId'))
       .save();
     })
     .then(function() {

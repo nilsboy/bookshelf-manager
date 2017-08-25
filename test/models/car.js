@@ -1,6 +1,7 @@
 var Car = function(Bookshelf) {
   return Bookshelf.Model.extend({
     tableName: 'cars',
+    idAttribute: 'customCarId',
 
     defaults: {
       quantity: 0

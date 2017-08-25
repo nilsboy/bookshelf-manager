@@ -3,7 +3,7 @@ module.exports = function(manager) {
   return manager.knex.transaction(function(trx) {
     var schema = trx.schema;
     return schema.createTableIfNotExists('cars', function(table) {
-      table.increments('id');
+      table.increments('customCarId');
       table.integer('color_id');
       table.integer('dealer_id');
       table.integer('model_id');
@@ -12,8 +12,8 @@ module.exports = function(manager) {
     .then(function() {
       return schema.createTableIfNotExists('cars_features', function(table) {
         table.increments('id');
-        table.integer('car_id');
-        table.integer('feature_id');
+        table.integer('car_customCarId');
+        table.integer('feature_customFeatureId');
       });
     })
     .then(function() {
@@ -33,7 +33,7 @@ module.exports = function(manager) {
     })
     .then(function() {
       return schema.createTableIfNotExists('features', function(table) {
-        table.increments('id');
+        table.increments('customFeatureId');
         table.string('name');
         table.decimal('cost');
       });
