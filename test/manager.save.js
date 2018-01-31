@@ -67,7 +67,6 @@ describe('manager', function() {
       return manager.fetch('car', { customCarId: 1 }, ['color', 'title']).then(function(car) {
         assert.equal(car.related('color').id, 1);
         assert.equal(car.related('color').get('name'), 'Grey');
-        console.error(`### car.toJSON():`, car.toJSON())
         assert.equal(car.related('title').id, 1);
         assert.equal(car.related('title').get('state'), 'TX');
 
@@ -163,10 +162,7 @@ describe('manager', function() {
 
           return manager.save(make, expected);
         }).then(function(make) {
-          var diffs = deep.diff(expected, make.toJSON()) || [];
-
-          assert.equal(diffs.length, 0, diffs);
-
+          assert.deepStrictEqual(expected, make.toJSON())
           return manager.knex('models_specs').select();
         }).then(function(results) {
           assert.equal(results.length, 2, 'Expected only 2 rows in `models_specs`, not ' + results.length);
