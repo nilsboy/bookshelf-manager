@@ -34,6 +34,16 @@ describe('manager', function() {
       });
     });
 
+    it('should throw if existing model could not be found', function() {
+      return manager.create('car', {
+        customCarId: 3
+      }).then(function(car) {
+        assert.fail('Should throw')
+      }).catch((error) => {
+        assert.equal(error.message, 'No entry found in cars with customCarId = 3')
+      });
+    });
+
     it('should create a new, populated collection', function() {
       return manager.create('cars', [
         { quantity: 1 },

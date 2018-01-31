@@ -1,5 +1,4 @@
 var assert  = require('assert');
-var deep    = require('deep-diff');
 
 var Bootstrap = require('./support/bootstrap');
 
